@@ -1,16 +1,35 @@
 'use client'
 
 import React, { createContext, useState, useContext, ReactNode, Dispatch, SetStateAction, useEffect, useRef } from 'react'
-import { AnimatePresence, motion, useMotionValue } from 'motion/react'
+import { motion, useMotionValue, warning } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { createPortal } from 'react-dom'
+
+const variants = {
+  hidden: {
+    scale: 0,
+  },
+  cursorEnter: {
+    scale: 1,
+  },
+  cursorLeave: {
+    scale: 0,
+  },
+  cursorDown: {
+    scale: 1.5,
+  },
+  info: {},
+  success: {},
+  warning: {},
+  error: {},
+}
 
 type CursorContextType = {
   initialCursorVariant: string
   setinitialCursorVariant: Dispatch<SetStateAction<string>>
   animateCursorVariant: string
   setAnimateCursorVariant: Dispatch<SetStateAction<string>>
-  animateCursor: (variant: string) => void
+  animateCursor: (variant: keyof typeof variants) => void
 }
 
 const CursorContext = createContext<CursorContextType>({
@@ -29,7 +48,7 @@ type CursorContextProviderProps = {
 }
 
 export const CursorContextProvider = ({ children }: CursorContextProviderProps) => {
-  const [initialCursorVariant, setinitialCursorVariant] = useState('')
+  const [initialCursorVariant, setinitialCursorVariant] = useState('hidden')
   const [animateCursorVariant, setAnimateCursorVariant] = useState('')
   const animateCursor = (variant: string) => {
     setinitialCursorVariant(animateCursorVariant)
@@ -55,15 +74,6 @@ function Cursor({ containerSelector: containerSelector = 'body' }: { containerSe
   const cursorRef = useRef<HTMLDivElement>(null)
   const cursorX = useMotionValue(0)
   const cursorY = useMotionValue(0)
-  const variants = {
-    cursorEnter: {
-      scale: 1,
-    },
-    cursorLeave: {
-      scale: 0,
-    },
-    buttonHover: {},
-  }
 
   useEffect(() => {
     const mouseMoveHandler = (e: MouseEvent) => {
@@ -87,18 +97,28 @@ function Cursor({ containerSelector: containerSelector = 'body' }: { containerSe
     const mouseLeaveHandler = () => {
       animateCursor('cursorLeave')
     }
+    const mouseDownHandler = () => {
+      animateCursor('cursorDown')
+    }
+    const mouseUpHandler = () => {
+      animateCursor('cursorEnter')
+    }
     const container = document.querySelector(containerSelector)
 
     window.addEventListener('mousemove', mouseMoveHandler)
     if (container) {
       container.addEventListener('mouseenter', mouseEnterHandler)
       container.addEventListener('mouseleave', mouseLeaveHandler)
+      container.addEventListener('mousedown', mouseDownHandler)
+      container.addEventListener('mouseup', mouseUpHandler)
     }
     return () => {
       window.removeEventListener('mousemove', mouseMoveHandler)
       if (container) {
         container.removeEventListener('mouseenter', mouseEnterHandler)
         container.removeEventListener('mouseleave', mouseLeaveHandler)
+        container.removeEventListener('mousedown', mouseDownHandler)
+        container.removeEventListener('mouseup', mouseUpHandler)
       }
     }
   }, [containerSelector])
@@ -116,7 +136,7 @@ function Cursor({ containerSelector: containerSelector = 'body' }: { containerSe
           <div className="fixed left-0 top-0 w-screen h-screen pointer-events-none z-[9999]">
             <motion.div
               ref={cursorRef}
-              className={cn('absolute pointer-events-none w-6 h-6 rounded-full ，bg-primary/10 ring-2 ring-primary/20 transition-all duration-200 ease-out')}
+              className={cn('absolute pointer-events-none w-6 h-6 rounded-full', 'bg-primary/10 ring-2 ring-primary/20 transition-all duration-200 ease-out')}
               variants={variants}
               initial={initialCursorVariant}
               animate={animateCursorVariant}
