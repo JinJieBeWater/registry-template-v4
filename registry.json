@@ -8,7 +8,9 @@
       "type": "registry:component",
       "title": "Hello World",
       "description": "A simple hello world component",
-      "registryDependencies": ["button"],
+      "registryDependencies": [
+        "button"
+      ],
       "files": [
         {
           "path": "registry/new-york/blocks/hello-world/hello-world.tsx",
@@ -21,8 +23,16 @@
       "type": "registry:component",
       "title": "Example Form",
       "description": "A contact form with Zod validation.",
-      "dependencies": ["zod"],
-      "registryDependencies": ["button", "input", "label", "textarea", "card"],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "button",
+        "input",
+        "label",
+        "textarea",
+        "card"
+      ],
       "files": [
         {
           "path": "registry/new-york/blocks/example-form/example-form.tsx",
@@ -35,7 +45,9 @@
       "type": "registry:component",
       "title": "Complex Component",
       "description": "A complex component showing hooks, libs and components.",
-      "registryDependencies": ["card"],
+      "registryDependencies": [
+        "card"
+      ],
       "files": [
         {
           "path": "registry/new-york/blocks/complex-component/page.tsx",
@@ -72,6 +84,35 @@
         },
         {
           "path": "registry/new-york/blocks/example-with-css/example-card.css",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "pointer-hint",
+      "type": "registry:component",
+      "title": "Pointer Hint",
+      "description": "A lightweight hint component that follows the mouse pointer.",
+      "files": [
+        {
+          "path": "registry/new-york/ui/pointer-hint.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "pointer-hint-demo",
+      "type": "registry:component",
+      "title": "Pointer Hint Demo",
+      "description": "Interactive demo showcasing the Pointer Hint component's features.",
+      "registryDependencies": [
+        "button",
+        "card",
+        "pointer-hint"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/blocks/pointer-hint-demo/pointer-hint-demo.tsx",
           "type": "registry:component"
         }
       ]
